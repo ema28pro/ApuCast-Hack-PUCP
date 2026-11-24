@@ -2,6 +2,7 @@
 
 import argparse
 import hashlib
+import json
 from pathlib import Path
 
 import numpy as np
@@ -16,7 +17,8 @@ def main():
     parser.add_argument("--data", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    if args.output.exists():
+    manifest_path = args.output.with_suffix(".json")
+    if args.output.exists() or manifest_path.exists():
         parser.error("La ruta de salida ya existe")
     root = Path(__file__).resolve().parents[1]
     data = args.data or root / "data"
@@ -48,8 +50,17 @@ def main():
     assert checked.shape == (646_800, 5) and checked.columns.equals(sample.columns)
     assert checked.id.equals(sample.id) and checked.id.is_unique
     assert np.isfinite(checked.iloc[:, 1:].to_numpy()).all() and checked.RH.between(0, 100).all()
+    digest = hashlib.sha256(temporary.read_bytes()).hexdigest()
+    archived = json.loads((model_dir / "registro_kaggle.json").read_text(encoding="utf-8"))
+    exact = digest == archived["sha256"]
+    manifest = {
+        "archivo": args.output.name, "sha256": digest, "filas": len(checked),
+        "sha256_envio_archivado": archived["sha256"], "coincide_byte_a_byte": exact,
+        "score_publico": archived["score_publico_kaggle_reportado_por_el_equipo"] if exact else None,
+    }
     temporary.replace(args.output)
-    print(f"CSV validado ({len(checked)} filas). SHA-256 {hashlib.sha256(args.output.read_bytes()).hexdigest()}")
+    manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    print(f"CSV validado ({len(checked)} filas). SHA-256 {digest}")
 
 
 if __name__ == "__main__":

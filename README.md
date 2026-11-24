@@ -25,7 +25,7 @@ python -m pip install -r requirements.txt
 python -X utf8 train/exportar_v2.py --output submission_v2_top.csv
 ```
 
-El exportador verifica **646.800 filas**, los encabezados id,RH,T,U,V, IDs únicos en el mismo orden que la plantilla, valores finitos y RH dentro del rango. T está en Kelvin y U y V en m/s. El hash del envío original está en models/v2-top/registro_kaggle.json. Los CSV y datos oficiales se guardan fuera del historial de Git.
+El exportador verifica **646.800 filas**, los encabezados id,RH,T,U,V, IDs únicos en el mismo orden que la plantilla, valores finitos y RH dentro del rango. T está en Kelvin y U y V en m/s. El exportador guarda un JSON con el hash de su salida. El hash del envío original está en models/v2-top/registro_kaggle.json. Los CSV y datos oficiales se guardan fuera del historial de Git.
 
 ## Archivos y casuísticas
 
