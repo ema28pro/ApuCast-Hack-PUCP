@@ -1,0 +1,21 @@
+{
+  "version": "v2",
+  "archivo": "submission_v2_rh_limitada.csv",
+  "sha256": "8476624e30381837bd88f9d59c3a41a3d19421f046956cdb8c5ffb5c0d3c444b",
+  "score_publico_kaggle_reportado_por_el_equipo": "0.433510",
+  "score_local_historico_reportado_por_el_equipo": "0.348012",
+  "score_proxy_local_protocolo_kaggle": "0.448374",
+  "periodo_local_utc": [
+    "2024-06-16",
+    "2024-06-30"
+  ],
+  "delta_publico_menos_local_historico": "0.085498",
+  "delta_publico_menos_proxy_local": "-0.014864",
+  "referencia_publica": "0.480000",
+  "distancia_a_referencia": "0.046490",
+  "reduccion_relativa_del_cociente_medio_para_referencia": "0.082067",
+  "candidato_hibrido_humedad": {
+    "score_local_exploratorio": "0.349200",
+    "publico_confirmado": false
+  }
+}
