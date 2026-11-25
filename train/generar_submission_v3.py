@@ -20,12 +20,16 @@ SEEDS = (0, 1, 2)
 VARIABLES = ["RH", "T", "U", "V"]
 
 
-def train_seed(ns, seed, epochs, windows, hours, targets, destination):
+def train_seed(ns, seed, epochs, windows, hours, targets, destination, *, variant="resnet"):
     torch.manual_seed(seed)
-    model = make_model(ns, "resnet")
+    if variant == "v2":
+        model = ns["Net"]().to(device=ns["dev"], memory_format=torch.channels_last)
+    else:
+        model = make_model(ns, variant)
     if destination.exists():
         checkpoint = torch.load(destination, map_location=ns["dev"], weights_only=True)
         assert checkpoint["epochs"] == epochs and checkpoint["seed"] == seed
+        assert checkpoint.get("variant", "resnet") == variant
         model.load_state_dict(checkpoint["weights"])
         return model
     rng = np.random.RandomState(seed)
@@ -50,7 +54,8 @@ def train_seed(ns, seed, epochs, windows, hours, targets, destination):
             raise ValueError(f"Pérdida no finita. Semilla {seed}, época {epoch}")
         print(f"Semilla {seed}, época {epoch:02d}/{epochs}. Último MSE {loss.item():.6f}", flush=True)
     checkpoint = {"weights": {k: v.detach().cpu() for k, v in model.state_dict().items()},
-                  "seed": seed, "epochs": epochs, "seconds": time.perf_counter() - started}
+                  "seed": seed, "epochs": epochs, "variant": variant,
+                  "seconds": time.perf_counter() - started}
     temporary = destination.with_suffix(".tmp")
     torch.save(checkpoint, temporary)
     temporary.replace(destination)

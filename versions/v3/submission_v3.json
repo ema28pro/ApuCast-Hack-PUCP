@@ -1,0 +1,17 @@
+{
+  "archivo": "submission_v3.csv",
+  "sha256": "cd64d3e0c2884ce7e5861724377f9551b068dfeb0a1e656024c6505c3b8062fe",
+  "filas": 646800,
+  "score_publico": null,
+  "fuentes_sha256": {
+    "v2": "362835b48a360a259b14ef30a8558637fc7c5f7461703add0f14b88d047cf613",
+    "resnet": "d33cd0e7757986f12fcbac13e96aed14eeda6df6b58ffe99699462623388f47a"
+  },
+  "pesos_resnet": {
+    "RH": 0.560996476311698,
+    "T": 0.6475016954394317,
+    "U": 0.6817880790018211,
+    "V": 0.6470675922269574
+  },
+  "version": "v3"
+}
