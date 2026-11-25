@@ -95,11 +95,11 @@ def paired_interval(model, baseline, reference):
     return np.percentile(skill(model) - skill(baseline), [2.5, 97.5]).tolist()
 
 
-def morning_metrics(pred, truth, times, dem):
+def morning_metrics(pred, truth, times, dem, alert_threshold_c=0.0):
     local = pd.to_datetime(times, format="%Y%m%d%H") - pd.Timedelta(hours=5)
     mask = (dem >= 2000) & (dem <= 4000)
     count = int(mask.sum() * 0.1)
-    overlaps, errors = [], []
+    overlaps, errors, observed_cold, hits, predicted_cold = [], [], [], [], []
     for date in local.normalize().unique():
         morning = (local.normalize() == date) & (local.hour <= 6)
         if morning.sum() != 7:
@@ -110,8 +110,38 @@ def morning_metrics(pred, truth, times, dem):
         b = np.argsort(forecast, kind="stable")[:count]
         overlaps.append(np.intersect1d(a, b).size / count)
         errors.append(np.abs(observed - forecast).mean())
-    return {"mornings": len(errors), "top_10_overlap": float(np.mean(overlaps)),
-            "minimum_mae_c": float(np.mean(errors))}
+        actual = observed < 273.15
+        forecast_cold = forecast < (273.15 + alert_threshold_c)
+        observed_cold.append(int(actual.sum()))
+        hits.append(int((actual & forecast_cold).sum()))
+        predicted_cold.append(int(forecast_cold.sum()))
+
+    n_mornings = len(errors)
+    if n_mornings == 0:
+        return {"mornings": 0, "top_10_overlap": None, "top_10_overlap_ic95": None,
+                "minimum_mae_c": None,
+                "subzero_observed": 0, "subzero_predicted": 0, "subzero_hits": 0,
+                "subzero_recall": None, "subzero_precision": None, "subzero_f1": None,
+                "subzero_recall_ic95": None}
+    recall = sum(hits) / sum(observed_cold) if sum(observed_cold) else None
+    precision = sum(hits) / sum(predicted_cold) if sum(predicted_cold) else None
+    f1 = (2 * recall * precision / (recall + precision)
+          if recall is not None and precision is not None and recall + precision else 0.0)
+    rng = np.random.default_rng(42)
+    draws = rng.integers(n_mornings, size=(5000, n_mornings))
+    overlap_interval = np.percentile(np.asarray(overlaps)[draws].mean(axis=1), [2.5, 97.5]).tolist()
+    hit_draws = np.asarray(hits)[draws].sum(axis=1)
+    cold_draws = np.asarray(observed_cold)[draws].sum(axis=1)
+    valid = cold_draws > 0
+    recall_interval = (np.percentile(hit_draws[valid] / cold_draws[valid], [2.5, 97.5]).tolist()
+                       if valid.any() else None)
+    return {"mornings": n_mornings, "top_10_overlap": float(np.mean(overlaps)),
+            "top_10_overlap_ic95": overlap_interval,
+            "minimum_mae_c": float(np.mean(errors)), "subzero_observed": sum(observed_cold),
+            "subzero_predicted": sum(predicted_cold), "subzero_hits": sum(hits),
+            "subzero_recall": recall, "subzero_precision": precision, "subzero_f1": f1,
+            "alert_threshold_c": float(alert_threshold_c),
+            "subzero_recall_ic95": recall_interval}
 
 
 def main():

@@ -137,3 +137,19 @@ La data de esta competencia fue reprocesada para el reto: no compares tus result
 DSC PUCP · dsc.pucp@gmail.com · Daniel Malca, organizador · daniel.malca@pucp.edu.pe
 
 Dudas sobre la data o las reglas: en el grupo de participantes.
+
+## Experimentos reproducibles de V3
+
+Con la data oficial en `data/`, ejecuta tres cortes temporales, seis variantes (V2,
+ResNet y residuo GFS, con y sin ponderación de frío) y tres semillas:
+
+```powershell
+.\.venv\Scripts\python.exe train\entrenar_v3.py --output experiments\full-v3 --epochs 25 --seeds 3
+.\.venv\Scripts\python.exe train\calibrar_alerta_v3.py --checkpoints experiments\full-v3 `
+  --output experiments\calibracion-alerta-v3.json --fold 2 --seeds 3
+```
+
+La calibración elige el umbral de alerta en la semana de selección y lo evalúa en
+los días posteriores. Reporta score general, superposición del 10 % más frío,
+RMSE de temperatura mínima y precisión/recobrado de celdas bajo cero. Los
+resultados y checkpoints se guardan localmente en `experiments/` (ignorado por Git).

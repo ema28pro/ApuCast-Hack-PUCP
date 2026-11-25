@@ -19,7 +19,8 @@ FOLDS = (
     ("2024052500", "2024060100", "2024061600"),
     ("2024060900", "2024061600", "2024070100"),
 )
-VARIANTS = ("v2", "resnet", "residuo_gfs")
+VARIANTS = ("v2", "resnet", "residuo_gfs",
+            "v2_frost", "resnet_frost", "residuo_gfs_frost")
 
 
 class ResidualBlock(nn.Module):
@@ -35,7 +36,8 @@ class ResidualBlock(nn.Module):
 
 def make_model(ns, variant):
     model = ns["Net"]()
-    if variant == "resnet":
+    architecture = variant.removesuffix("_frost")
+    if architecture == "resnet":
         # Igual ancho, dos convoluciones espaciales por etapa y la misma cabeza.
         model.enc = ResidualBlock(14, 64)
         model.dec = nn.Sequential(ResidualBlock(73, 64), nn.Conv2d(64, 4, 1))
@@ -85,12 +87,15 @@ def run_seed(ns, fold, variant, seed, epochs, save_path):
     rng = np.random.RandomState(seed)
     model = make_model(ns, variant)
     opt = torch.optim.AdamW(model.parameters(), lr=2e-3, weight_decay=1e-4)
-    base = ns["gfs_fine"] if variant == "residuo_gfs" else fold.reference
+    architecture = variant.removesuffix("_frost")
+    frost_weight = 4.0 if variant.endswith("_frost") else 0.0
+    base = ns["gfs_fine"] if architecture == "residuo_gfs" else fold.reference
     # Escala común para aislar el efecto de la referencia de reconstrucción.
     scale = ns["to_t"](fold.scale)
     targets = ns["Ytr"]
     total_steps = epochs * ((len(fold.train) + 31) // 32)
     schedule = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=2e-3, total_steps=total_steps)
+    altitude = ns["to_t"](((ns["dem"] >= 2000) & (ns["dem"] <= 4000)).astype(np.float32))
 
     def predict(indices, training=False):
         x = ns["to_t"]((ns["Wtr"][indices] - fold.mu) / fold.sd)
@@ -108,6 +113,13 @@ def run_seed(ns, fold, variant, seed, epochs, save_path):
             raise ValueError("Predicción no finita")
         return predictions
 
+    def selection_utility(indices, predictions):
+        general = skill(predictions, targets[indices], fold.reference[indices])["total"]
+        product = morning_metrics(predictions, targets[indices], ns["ttr"][indices], ns["dem"])
+        recall = product["subzero_recall"] or 0.0
+        top10 = product["top_10_overlap"] or 0.0
+        return 0.70 * general + 0.15 * top10 + 0.15 * recall
+
     best = None
     started = time.perf_counter()
     order = fold.train.copy()
@@ -117,22 +129,36 @@ def run_seed(ns, fold, variant, seed, epochs, save_path):
         for start in range(0, len(order), 32):
             batch = order[start:start + 32]
             target = ns["to_t"](targets[batch] - base[batch]) / scale
-            loss = F.mse_loss(predict(batch, training=True), target)
+            prediction = predict(batch, training=True)
+            squared_error = (prediction - target).square()
+            if frost_weight:
+                temperature = ns["to_t"](targets[batch, ..., 1])
+                temperature_weight = 1 + frost_weight * altitude[None] * torch.sigmoid(
+                    (275.15 - temperature) / 1.5)
+                weights = torch.ones_like(squared_error)
+                weights[..., 1] = temperature_weight
+                weights = weights / weights.mean()
+                loss = (weights * squared_error).mean()
+            else:
+                loss = squared_error.mean()
             opt.zero_grad(set_to_none=True)
             loss.backward()
             opt.step()
             schedule.step()
         indices = fold.select
-        score = skill(evaluate(indices), targets[indices], fold.reference[indices])["total"]
-        if best is None or score > best["score"]:
+        validation_prediction = evaluate(indices)
+        score = skill(validation_prediction, targets[indices], fold.reference[indices])["total"]
+        utility = selection_utility(indices, validation_prediction)
+        if best is None or utility > best["utility"]:
             best = {"weights": {k: v.detach().cpu().clone() for k, v in model.state_dict().items()},
-                    "epoch": epoch, "score": score, "seed": seed, "variant": variant}
+                    "epoch": epoch, "score": score, "utility": utility,
+                    "seed": seed, "variant": variant, "frost_weight": frost_weight}
         if epoch - best["epoch"] >= 5:
             break
     model.load_state_dict(best["weights"])
     best["seconds"] = time.perf_counter() - started
     torch.save(best, save_path)
-    print(f"{save_path.stem} selección={best['score']:.6f} época={best['epoch']} "
+    print(f"{save_path.stem} score={best['score']:.6f} utilidad={best['utility']:.6f} época={best['epoch']} "
           f"segundos={best['seconds']:.6f}", flush=True)
     return evaluate(fold.report), sum(p.numel() for p in model.parameters()), best["seconds"]
 
@@ -141,11 +167,13 @@ def main():
     args = argparse.ArgumentParser()
     args.add_argument("--output", type=Path, required=True)
     args.add_argument("--smoke", action="store_true")
+    args.add_argument("--epochs", type=int, default=25)
+    args.add_argument("--seeds", type=int, default=3)
     config = args.parse_args()
     config.output.mkdir(parents=True, exist_ok=False)
     ns = load_starter(Path(__file__).resolve().parents[1])
     ns["gfs_fine"] = interpolate_gfs(ns, ns["Xtr"])
-    seeds, epochs = ((0,), 1) if config.smoke else ((0, 1, 2), 25)
+    seeds, epochs = ((0,), 1) if config.smoke else (tuple(range(config.seeds)), config.epochs)
     reports = []
     for bounds in (FOLDS[-1:] if config.smoke else FOLDS):
         fold = Fold(ns, bounds)
@@ -154,6 +182,7 @@ def main():
         reference = fold.reference[indices]
         days = np.array([stamp[:8] for stamp in stamps])
         reference_error, _ = error_by_day(reference, truth, days)
+        gfs_product = morning_metrics(ns["gfs_fine"][indices], truth, stamps, ns["dem"])
         np.savez_compressed(config.output / f"preprocesamiento_{bounds[1]}.npz",
                             mu=fold.mu, sd=fold.sd, scale=fold.scale, climatology=fold.clim)
         report = {"corte": bounds, "horas": [len(fold.train), len(fold.select), len(indices)],
@@ -179,6 +208,14 @@ def main():
                                for hour in range(24)
                                if (mask := (fold.hours[indices] - 5) % 24 == hour).any()},
             )
+            values["producto"]["gfs_interpolado"] = gfs_product
+            values["producto"]["top10_delta_vs_gfs"] = (
+                values["producto"]["top_10_overlap"] - gfs_product["top_10_overlap"]
+                if values["producto"]["top_10_overlap"] is not None else None)
+            values["producto"]["subzero_recall_delta_vs_gfs"] = (
+                values["producto"]["subzero_recall"] - gfs_product["subzero_recall"]
+                if values["producto"]["subzero_recall"] is not None
+                and gfs_product["subzero_recall"] is not None else None)
             report["variantes"][variant] = values
             print(f"{variant} reporte={values['total']:.6f} delta={values['delta_vs_v2']:+.6f}", flush=True)
         reports.append(report)
