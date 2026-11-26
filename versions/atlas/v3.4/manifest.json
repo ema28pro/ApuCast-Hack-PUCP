@@ -1,0 +1,95 @@
+{
+  "version": "3.4",
+  "route": {
+    "RH": "MixDriftBias",
+    "T": "MixDriftBias",
+    "U": "MixAdaptiveFlow",
+    "V": "MixDriftBias"
+  },
+  "gate": {
+    "last_gain": 0.0022790178386681292,
+    "late_weeks_gain": 0.0027392090256292967,
+    "last14_gain": 0.002573770220995364,
+    "last_win_fraction": 0.9375,
+    "pooled_gain": 0.0011347527602635354,
+    "pooled_win_fraction": 0.8333333333333334,
+    "origins": {
+      "O1": 8.304204936027126e-05,
+      "O2": 0.0005808426099158659,
+      "O3": 0.0022790178386681292
+    },
+    "leave_one_out": {
+      "O1": 0.001561763705058894,
+      "O2": 0.0013712760931308132,
+      "O3": 0.0003376721918345593
+    },
+    "bootstrap3": {
+      "ci95": [
+        0.0008442135126144085,
+        0.0014336616615433894
+      ],
+      "se": 0.00015157082467338504,
+      "replicates": 10000,
+      "approx_nonoverlap_blocks": 30
+    },
+    "bootstrap7": {
+      "ci95": [
+        0.0007936961929488811,
+        0.0014512418068944877
+      ],
+      "se": 0.00016975906468400692,
+      "replicates": 10000,
+      "approx_nonoverlap_blocks": 12
+    },
+    "cpu_signal": true,
+    "review_eligible": false,
+    "statistical_gate_passed_retrospective": true
+  },
+  "deploy": {
+    "train_count": 2767,
+    "cal_count": 56,
+    "train_max": "2024062323",
+    "cal_min": "2024062400",
+    "cal_max": "2024063021",
+    "test_count": 264,
+    "weights": {
+      "RH": 0.16763285710499315,
+      "T": 0.20518818054638593,
+      "U": 0.20938052051138795,
+      "V": 0.186255211148316
+    },
+    "mean_abs_vs_v27": {
+      "RH": 0.7818053463543598,
+      "T": 0.07303692444341374,
+      "U": 0.11266568788497215,
+      "V": 0.09941026784168212
+    },
+    "mean_abs_vs_same_weights_bias325": {
+      "RH": 0.40215581899967023,
+      "T": 0.052032118073677434,
+      "U": 0.006315569486371252,
+      "V": 0.061508333248834396
+    },
+    "replay_max_abs": 3.0517578125e-05,
+    "csv_sha256": "905dc77511ac6aad847ec08a918f8f1a022547ef106a649bba46e010e46c6c6e",
+    "rows": 646800,
+    "scope": "manual experimental review; no test labels; no automatic submission"
+  },
+  "source_sha256": "d2cb790e59832ad52b3173de496681d39ad4dcd84864cae3940941a4f60bf6bf",
+  "audit_sha256": "78568dd2c40e4e5d4317fc113fe992eff4e8f4143b9d8c0bbec6d6cbcd9d83a7",
+  "base_sha256": "9ce6e7594d0edbf884e56902fd67e1fa02de1a94ba2f6815fc5c8b5115a801e1",
+  "data": {
+    "train.npz": "f5120b7a7cf5661e8e4143a726f2d22d13905d11d878afb60c8ff5cd02444844",
+    "test.npz": "97894492e5caae72e45b09f0d4d8bd87e03c12e5029f33d276b353870aa5c0bd",
+    "static.npz": "0e181ff372a9a33fdbbcede81da6ddd2da8208f15b94594d78d3f10464852165",
+    "sample_submission.csv": "507d20c815b09f253b43696dc611312355672f1552d2b313e940b32f7f0ca6a7"
+  },
+  "files": {
+    "AdaptiveFlow.npz": "fef9b897694b564c67d65ff4ab0862595ef990415ace1029d79d007f5b522199",
+    "Atlas34_AUDIT.csv": "f0cb6fef49c32d4436530c811d1c1ed3ac34d3204e916a034fc9f06c6f9e7858",
+    "Atlas34_REVIEW.csv": "905dc77511ac6aad847ec08a918f8f1a022547ef106a649bba46e010e46c6c6e",
+    "Bias.npz": "a2154324837aeb39bb74a90a3ea22a3edeed13d2ad42a80b32531ae42ae4cd11",
+    "Drift.npz": "e6acbd71964bae2f25e2113903895afabc95d3c25adecdf0dbbbc2dcc8b1fe23",
+    "Physics.npz": "ab86488a942bee482ebad5f424e3123ae490c772f63f195ae83ce9ebb85e94de"
+  }
+}

@@ -1,0 +1,481 @@
+{
+  "mode": "proxy",
+  "reference": "Narrow proxy",
+  "scope": "retrospective; no blind estimate; no automatic submission",
+  "gate": {
+    "last_gain": 0.01497890258969703,
+    "late_weeks_gain": 0.006838861840746779,
+    "last14_gain": 0.007146371556848052,
+    "last_win_fraction": 0.90625,
+    "pooled_gain": 0.008162549993210533,
+    "pooled_win_fraction": 0.9285714285714286,
+    "origins": {
+      "O1": 0.0035185452054675714,
+      "O2": 0.003392967701238092,
+      "O3": 0.01497890258969703
+    },
+    "leave_one_out": {
+      "O1": 0.01010850681750275,
+      "O2": 0.010170899400623101,
+      "O3": 0.00344767281202385
+    },
+    "bootstrap3": {
+      "ci95": [
+        0.005404811338188514,
+        0.011251666664161835
+      ],
+      "se": 0.0015044129312954588,
+      "replicates": 10000,
+      "approx_nonoverlap_blocks": 30
+    },
+    "bootstrap7": {
+      "ci95": [
+        0.004561922132694468,
+        0.012392801153966668
+      ],
+      "se": 0.002019833489259003,
+      "replicates": 10000,
+      "approx_nonoverlap_blocks": 12
+    },
+    "cpu_signal": true,
+    "review_eligible": false
+  },
+  "reports": [
+    {
+      "origin": "O1",
+      "mode": "proxy",
+      "reference": "Narrow proxy",
+      "cache": {
+        "cache_hit": false,
+        "seconds": 1.0207090600015363,
+        "sha256": "19287128c597b02a3a27d37f7bf69bb8ac4a40942c69ef9681aff5944b0fe8d7",
+        "train_max": "2024031623",
+        "cut": "2024031700"
+      },
+      "counts": [
+        666,
+        32,
+        208
+      ],
+      "policies": {
+        "MixRawVar": {
+          "weights": [
+            0.07342654189400198,
+            0.00958786992250128,
+            0.15019081304364293,
+            0.12928631983274977
+          ],
+          "common": 0.5,
+          "factors": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "prequential_days": 2
+        },
+        "MixPlaceboVar": {
+          "weights": [
+            0.08097026543831647,
+            0.030473030569608487,
+            0.1769259800328138,
+            0.16358112312941578
+          ],
+          "common": 0.5,
+          "factors": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "prequential_days": 2
+        },
+        "MixPhysicsVar": {
+          "weights": [
+            0.10500128462121468,
+            0.0,
+            0.23277178737676002,
+            0.19420036863258225
+          ],
+          "common": 0.5,
+          "factors": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "prequential_days": 2
+        },
+        "MixBiasCommon": {
+          "weights": [
+            0.08698205601354446,
+            0.02596705643713646,
+            0.2329322029141796,
+            0.18450416820761822
+          ],
+          "common": 0.5,
+          "factors": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "prequential_days": 2
+        },
+        "MixBiasVar": {
+          "weights": [
+            0.08698205601354446,
+            0.02596705643713646,
+            0.2329322029141796,
+            0.18450416820761822
+          ],
+          "common": 0.5,
+          "factors": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "prequential_days": 2
+        },
+        "MixRecentVar": {
+          "weights": [
+            0.10526940818530335,
+            0.0,
+            0.22326462334969155,
+            0.1788249998101298
+          ],
+          "common": 0.5,
+          "factors": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "prequential_days": 2
+        },
+        "MixDriftVar": {
+          "weights": [
+            0.10478321098152465,
+            0.0,
+            0.20108929688663127,
+            0.1701353748732402
+          ],
+          "common": 0.5,
+          "factors": [
+            0.5,
+            0.5,
+            0.5,
+            0.5
+          ],
+          "prequential_days": 2
+        }
+      },
+      "neural_timings": [],
+      "crossfit_seconds": null,
+      "wall_seconds": 9.716221512999255,
+      "code_sha256": "4411658eb868a353f72815ece14101b4c7fc135d8e7d20973e865ec98971f55e",
+      "data": {
+        "train.npz": "f5120b7a7cf5661e8e4143a726f2d22d13905d11d878afb60c8ff5cd02444844",
+        "test.npz": "97894492e5caae72e45b09f0d4d8bd87e03c12e5029f33d276b353870aa5c0bd",
+        "static.npz": "0e181ff372a9a33fdbbcede81da6ddd2da8208f15b94594d78d3f10464852165",
+        "sample_submission.csv": "507d20c815b09f253b43696dc611312355672f1552d2b313e940b32f7f0ca6a7"
+      },
+      "seed_list": [
+        42,
+        123
+      ]
+    },
+    {
+      "origin": "O2",
+      "mode": "proxy",
+      "reference": "Narrow proxy",
+      "cache": {
+        "cache_hit": false,
+        "seconds": 2.432351174998985,
+        "sha256": "0d973ded05ee690524b0d344219b29b504239cbfbb7eb7d6ddf3cfb5c08239e3",
+        "train_max": "2024041323",
+        "cut": "2024041400"
+      },
+      "counts": [
+        1215,
+        56,
+        206
+      ],
+      "policies": {
+        "MixRawVar": {
+          "weights": [
+            0.013150413502339022,
+            0.2568723282467657,
+            0.0408296902935147,
+            0.0784112180777954
+          ],
+          "common": 0.85,
+          "factors": [
+            0.425,
+            0.925,
+            0.425,
+            0.85
+          ],
+          "prequential_days": 5
+        },
+        "MixPlaceboVar": {
+          "weights": [
+            0.0500313053395661,
+            0.2619117197469834,
+            0.08773838442057771,
+            0.14997030976142145
+          ],
+          "common": 0.85,
+          "factors": [
+            0.425,
+            0.925,
+            0.675,
+            0.925
+          ],
+          "prequential_days": 5
+        },
+        "MixPhysicsVar": {
+          "weights": [
+            0.017287865529050414,
+            0.32563780006441895,
+            0.09072290814297841,
+            0.13645470191651277
+          ],
+          "common": 1.0,
+          "factors": [
+            0.5,
+            1.0,
+            0.75,
+            1.0
+          ],
+          "prequential_days": 5
+        },
+        "MixBiasCommon": {
+          "weights": [
+            0.12503670579725285,
+            0.35093589822283033,
+            0.12968267860468088,
+            0.1483922080323648
+          ],
+          "common": 1.0,
+          "factors": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "prequential_days": 5
+        },
+        "MixBiasVar": {
+          "weights": [
+            0.06251835289862642,
+            0.35093589822283033,
+            0.09726200895351067,
+            0.13726279242993744
+          ],
+          "common": 1.0,
+          "factors": [
+            0.5,
+            1.0,
+            0.75,
+            0.925
+          ],
+          "prequential_days": 5
+        },
+        "MixRecentVar": {
+          "weights": [
+            0.03661272082796985,
+            0.31545936326917645,
+            0.0723858866146165,
+            0.0690104780311065
+          ],
+          "common": 0.85,
+          "factors": [
+            0.425,
+            0.925,
+            0.675,
+            0.85
+          ],
+          "prequential_days": 5
+        },
+        "MixDriftVar": {
+          "weights": [
+            0.02754409841018633,
+            0.34974660010493563,
+            0.18496250273724693,
+            0.1827727665651066
+          ],
+          "common": 1.0,
+          "factors": [
+            0.5,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "prequential_days": 5
+        }
+      },
+      "neural_timings": [],
+      "crossfit_seconds": null,
+      "wall_seconds": 15.831758251000792,
+      "code_sha256": "4411658eb868a353f72815ece14101b4c7fc135d8e7d20973e865ec98971f55e",
+      "data": {
+        "train.npz": "f5120b7a7cf5661e8e4143a726f2d22d13905d11d878afb60c8ff5cd02444844",
+        "test.npz": "97894492e5caae72e45b09f0d4d8bd87e03c12e5029f33d276b353870aa5c0bd",
+        "static.npz": "0e181ff372a9a33fdbbcede81da6ddd2da8208f15b94594d78d3f10464852165",
+        "sample_submission.csv": "507d20c815b09f253b43696dc611312355672f1552d2b313e940b32f7f0ca6a7"
+      },
+      "seed_list": [
+        42,
+        123
+      ]
+    },
+    {
+      "origin": "O3",
+      "mode": "proxy",
+      "reference": "Narrow proxy",
+      "cache": {
+        "cache_hit": false,
+        "seconds": 7.3115626660001,
+        "sha256": "17d901dda8c49885e352bcac31ce496d4d536081672c3ae0d504d3156aa33483",
+        "train_max": "2024052023",
+        "cut": "2024052100"
+      },
+      "counts": [
+        1999,
+        56,
+        256
+      ],
+      "policies": {
+        "MixRawVar": {
+          "weights": [
+            0.0,
+            0.1374868478565375,
+            0.09549702201783977,
+            0.125095948199899
+          ],
+          "common": 0.85,
+          "factors": [
+            0.425,
+            0.85,
+            0.925,
+            0.925
+          ],
+          "prequential_days": 5
+        },
+        "MixPlaceboVar": {
+          "weights": [
+            0.015785749297837763,
+            0.20070944675353994,
+            0.1377090933016262,
+            0.1359856433827058
+          ],
+          "common": 0.85,
+          "factors": [
+            0.425,
+            0.85,
+            0.925,
+            0.925
+          ],
+          "prequential_days": 5
+        },
+        "MixPhysicsVar": {
+          "weights": [
+            0.04373509268477779,
+            0.1428680356156311,
+            0.16845639641643237,
+            0.16173530033518835
+          ],
+          "common": 0.85,
+          "factors": [
+            0.675,
+            0.85,
+            0.925,
+            0.925
+          ],
+          "prequential_days": 5
+        },
+        "MixBiasCommon": {
+          "weights": [
+            0.34651374079994435,
+            0.2234572483779781,
+            0.2188398187889069,
+            0.21718834026669395
+          ],
+          "common": 1.0,
+          "factors": [
+            1.0,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "prequential_days": 5
+        },
+        "MixBiasVar": {
+          "weights": [
+            0.34651374079994435,
+            0.20669795474962974,
+            0.2188398187889069,
+            0.21718834026669395
+          ],
+          "common": 1.0,
+          "factors": [
+            1.0,
+            0.925,
+            1.0,
+            1.0
+          ],
+          "prequential_days": 5
+        },
+        "MixRecentVar": {
+          "weights": [
+            0.1297940727117602,
+            0.2597844089762362,
+            0.2624038400133537,
+            0.16283539549604412
+          ],
+          "common": 1.0,
+          "factors": [
+            0.925,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "prequential_days": 5
+        },
+        "MixDriftVar": {
+          "weights": [
+            0.12668146257386284,
+            0.3075523368974681,
+            0.2370499594292415,
+            0.2505109878930481
+          ],
+          "common": 1.0,
+          "factors": [
+            0.925,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "prequential_days": 5
+        }
+      },
+      "neural_timings": [],
+      "crossfit_seconds": null,
+      "wall_seconds": 23.303080659001353,
+      "code_sha256": "4411658eb868a353f72815ece14101b4c7fc135d8e7d20973e865ec98971f55e",
+      "data": {
+        "train.npz": "f5120b7a7cf5661e8e4143a726f2d22d13905d11d878afb60c8ff5cd02444844",
+        "test.npz": "97894492e5caae72e45b09f0d4d8bd87e03c12e5029f33d276b353870aa5c0bd",
+        "static.npz": "0e181ff372a9a33fdbbcede81da6ddd2da8208f15b94594d78d3f10464852165",
+        "sample_submission.csv": "507d20c815b09f253b43696dc611312355672f1552d2b313e940b32f7f0ca6a7"
+      },
+      "seed_list": [
+        42,
+        123
+      ]
+    }
+  ],
+  "preregister": "bcb9d59dc0e13859bd7c6a9d7f6ab63fc4eea2f5175f83892b8520926aff5f37"
+}
